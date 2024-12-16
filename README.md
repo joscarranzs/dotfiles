@@ -21,8 +21,9 @@ wsl --install
 wsl --set-version <DistroName> 2
 ```
 #### Crear usuario (jcarranzs)
-Configura un nuevo usuario al iniciar la distro.
-
+```bash
+jcarranzs
+```
 #### Actualizar la distro
 ```bash
 sudo apt update && sudo apt upgrade -y
