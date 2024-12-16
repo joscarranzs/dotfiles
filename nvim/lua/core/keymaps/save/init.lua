@@ -1,5 +1,3 @@
--- Configurar la tecla líder como espacio
-vim.g.mapleader = " "  -- Define la tecla líder como espacio
 
 -- Función para limpiar y formatear archivos
 local function clean_and_format()

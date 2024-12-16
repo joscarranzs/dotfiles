@@ -1,3 +1,6 @@
+-- Configurar la tecla líder como espacio
+vim.g.mapleader = " "  -- Define la tecla líder como espacio
+
 require("core.keymaps.save")
 require("core.keymaps.exit")
 require("core.keymaps.netrw")
