@@ -53,3 +53,6 @@ vim.opt.hlsearch = true    -- Resaltar coincidencias de búsqueda
 vim.opt.incsearch = true   -- Resaltar incrementalmente mientras escribes en la búsqueda
 vim.opt.ignorecase = true  -- Ignorar mayúsculas/minúsculas al buscar
 vim.opt.smartcase = true   -- Respeta mayúsculas si las usas en la búsqueda
+
+-- Habilitar registro de LSP
+vim.lsp.set_log_level("debug")

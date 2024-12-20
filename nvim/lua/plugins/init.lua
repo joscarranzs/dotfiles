@@ -28,8 +28,6 @@ require("lazy").setup({
     require("plugins.configs.treesitter"),
     -- Plugin para el Java
     require("plugins.configs.jbtls"),
-    -- Plugin para autocompletado
-    require("plugins.configs.cmp"),
     -- Plugin para el cursor
     require("plugins.configs.cursor"),
     -- Plugin para el tmux

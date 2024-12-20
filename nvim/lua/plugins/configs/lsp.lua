@@ -2,136 +2,169 @@ return {
     -- Mason: Instalador de herramientas
     {
         "williamboman/mason.nvim",
-        opts = function(_, opts)
-            opts.ensure_installed = opts.ensure_installed or {}
-
-            -- Herramientas necesarias
-            vim.list_extend(opts.ensure_installed, {
-                "html-lsp", -- HTML
-                "css-lsp", -- CSS
-                "typescript-language-server", -- TypeScript y JavaScript
-                "clangd", -- C y C++
-                "astro-language-server", -- Astro
-                "jdtls", -- Java
-            })
+        config = function()
+            require("mason").setup()
         end,
     },
 
-    -- Mason Tool Installer: Herramientas adicionales
+    -- Mason-LSPconfig: Integración con lspconfig
     {
-        "WhoIsSethDaniel/mason-tool-installer.nvim", -- Corrección: Nombre completo del plugin
-        opts = function()
-            require("mason-tool-installer").setup({
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = { "neovim/nvim-lspconfig" },
+        config = function()
+            require("mason-lspconfig").setup({
                 ensure_installed = {
-                    "java-debug-adapter", -- Adaptador para depuración en Java
-                    "java-test", -- Herramienta para pruebas en Java
+                    "lua_ls",    -- Lua
+                    "ts_ls",     -- JavaScript/TypeScript (nuevo nombre)
+                    "clangd",    -- C/C++
+                    "html",      -- HTML
+                    "cssls",     -- CSS
+                    "tailwindcss", -- Tailwind CSS
+                    "jdtls",     -- Java
+                    "astro",     -- Astro
                 },
+                automatic_installation = true,
             })
         end,
     },
 
-    -- Configuración de servidores LSP
+    -- Configuración de LSP Servers
     {
         "neovim/nvim-lspconfig",
-        opts = {
-            servers = {
-                -- Configuración para HTML
-                html = {
-                    settings = {
-                        html = {
-                            format = {
-                                enable = true,
-                                wrapLineLength = 120,
-                                wrapAttributes = "force",
-                            },
-                            hover = {
-                                documentation = true,
-                                references = true,
-                            },
-                        },
+        config = function()
+            local lspconfig = require("lspconfig")
+            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+            -- Servidor Lua
+            lspconfig.lua_ls.setup({
+                capabilities = capabilities,
+                settings = {
+                    Lua = {
+                        runtime = { version = "LuaJIT" },
+                        diagnostics = { globals = { "vim" } },
+                        workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+                        telemetry = { enable = false },
                     },
                 },
+            })
 
-                -- Configuración para CSS
-                cssls = {
-                    settings = {
-                        css = { validate = true },
-                        less = { validate = true },
-                        scss = { validate = true },
-                    },
-                },
+            -- TypeScript/JavaScript
+            lspconfig.ts_ls.setup({
+                capabilities = capabilities,
+                root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
+            })
 
-                -- Configuración para TypeScript y JavaScript
-                tsserver = {
-                    settings = {
-                        typescript = {
-                            inlayHints = {
-                                includeInlayParameterNameHints = "all",
-                                includeInlayFunctionParameterTypeHints = true,
-                                includeInlayVariableTypeHints = true,
-                                includeInlayPropertyDeclarationTypeHints = true,
-                            },
-                        },
-                        javascript = {
-                            inlayHints = {
-                                includeInlayParameterNameHints = "all",
-                                includeInlayFunctionParameterTypeHints = true,
-                                includeInlayVariableTypeHints = true,
-                                includeInlayPropertyDeclarationTypeHints = true,
-                            },
-                        },
-                    },
-                    root_dir = function(...)
-                        return require("lspconfig.util").root_pattern("package.json", "tsconfig.json", ".git")(...)
-                    end,
-                    single_file_support = false,
-                },
+            -- C/C++
+            lspconfig.clangd.setup({ capabilities = capabilities })
 
-                -- Configuración para Lua
-                lua_ls = {
-                    settings = {
-                        Lua = {
-                            runtime = { version = "LuaJIT" },
-                            diagnostics = { globals = { "vim" } },
-                            workspace = { checkThirdParty = false },
-                            telemetry = { enable = false },
-                        },
-                    },
-                },
-            },
-            setup = function()
-                local lspconfig = require("lspconfig")
-                local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
-                local lsp_attach = function(client, bufnr)
-                    -- Aquí puedes agregar configuraciones adicionales al adjuntar el cliente LSP
-                end
+            -- HTML
+            lspconfig.html.setup({ capabilities = capabilities })
 
-                -- Configurar Mason LSP
-                require("mason-lspconfig").setup({
-                    ensure_installed = {
-                        "html", "cssls", "tsserver", "lua_ls", "clangd", "astro", "jdtls",
-                    },
-                })
+            -- CSS
+            lspconfig.cssls.setup({ capabilities = capabilities })
 
-                -- Configurar manejadores para los servidores
-                require("mason-lspconfig").setup_handlers({
-                    function(server_name)
-                        lspconfig[server_name].setup({
-                            on_attach = lsp_attach,
-                            capabilities = lsp_capabilities,
-                        })
-                    end,
-                })
-            end,
+            -- Tailwind CSS
+            lspconfig.tailwindcss.setup({ capabilities = capabilities })
+
+            -- Java
+            lspconfig.jdtls.setup({ capabilities = capabilities })
+
+            -- Astro
+            lspconfig.astro.setup({
+                capabilities = capabilities,
+                root_dir = lspconfig.util.root_pattern("package.json", ".git"),
+            })
+        end,
+    },
+
+    -- Autocompletado con nvim-cmp
+    {
+        "hrsh7th/nvim-cmp",
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",   -- Soporte LSP
+            "hrsh7th/cmp-buffer",     -- Autocompletado de palabras del buffer
+            "hrsh7th/cmp-path",       -- Autocompletado de rutas
+            "hrsh7th/cmp-cmdline",    -- Autocompletado para comandos
+            "L3MON4D3/LuaSnip",       -- Snippets
+            "saadparwaiz1/cmp_luasnip", -- Integración de LuaSnip
         },
         config = function()
-            -- Cambiar el estilo de los bordes de ventanas flotantes del LSP
-            local open_floating_preview = vim.lsp.util.open_floating_preview
-            function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-                opts = opts or {}
-                opts.border = opts.border or "rounded"
-                return open_floating_preview(contents, syntax, opts, ...)
-            end
+            local cmp = require("cmp")
+            local luasnip = require("luasnip")
+
+            cmp.setup({
+                snippet = {
+                    expand = function(args)
+                        luasnip.lsp_expand(args.body)
+                    end,
+                },
+                mapping = cmp.mapping.preset.insert({
+                    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+                    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+                    ["<C-Space>"] = cmp.mapping.complete(),
+                    ["<C-e>"] = cmp.mapping.abort(),
+                    ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                    ["<Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        elseif luasnip.expand_or_jumpable() then
+                            luasnip.expand_or_jump()
+                        else
+                            fallback()
+                        end
+                    end, { "i", "s" }),
+                    ["<S-Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        elseif luasnip.jumpable(-1) then
+                            luasnip.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { "i", "s" }),
+                }),
+                sources = {
+                    { name = "nvim_lsp" },
+                    { name = "luasnip" },
+                    { name = "buffer" },
+                    { name = "path" },
+                },
+            })
+
+            -- Configuración específica para ciertos tipos de archivos
+            cmp.setup.filetype("gitcommit", {
+                sources = cmp.config.sources({
+                    { name = "cmp_git" }, -- Fuente de completado para Git
+                }, {
+                        { name = "buffer" },
+                    }),
+            })
+
+            -- Configuración para completado en el modo de búsqueda (`/` y `?`)
+            cmp.setup.cmdline({ "/", "?" }, {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = {
+                    { name = "buffer" },
+                },
+            })
+
+            -- Configuración para completado en el modo de comandos (`:`)
+            cmp.setup.cmdline(":", {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = cmp.config.sources({
+                    { name = "path" },
+                }, {
+                        { name = "cmdline" },
+                    }),
+            })
+        end,
+    },
+
+    -- Snippets con LuaSnip
+    {
+        "L3MON4D3/LuaSnip",
+        config = function()
+            require("luasnip.loaders.from_vscode").lazy_load()
         end,
     },
 }
