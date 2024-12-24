@@ -22,6 +22,7 @@ return {
                     "tailwindcss", -- Tailwind CSS
                     "jdtls",     -- Java
                     "astro",     -- Astro
+                    "pyright",   -- Python
                 },
                 automatic_installation = true,
             })
@@ -73,6 +74,21 @@ return {
             lspconfig.astro.setup({
                 capabilities = capabilities,
                 root_dir = lspconfig.util.root_pattern("package.json", ".git"),
+            })
+
+            -- Python
+            lspconfig.pyright.setup({
+                capabilities = capabilities,
+                root_dir = lspconfig.util.root_pattern(".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt"),
+                settings = {
+                    python = {
+                        analysis = {
+                            autoSearchPaths = true,
+                            useLibraryCodeForTypes = true,
+                            diagnosticMode = "workspace",
+                        },
+                    },
+                },
             })
         end,
     },

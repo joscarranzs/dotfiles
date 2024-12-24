@@ -15,7 +15,7 @@ vim.opt.rtp:prepend(lazypath)
 -- Configuración inicial de Lazy.nvim
 require("lazy").setup({
     -- Plugin de autocompletado
-    require("plugins.configs.supermaven"),
+    -- require("plugins.configs.supermaven"),
     -- Plugin para el theme
     require("plugins.configs.rose-pine"),
     -- Plugin para la transparencia
@@ -36,4 +36,6 @@ require("lazy").setup({
     require("plugins.configs.colorizer"),
     -- Plugin para visualizar keymaps
     require("plugins.configs.which-key"),
+    -- Plugin para el copilot
+    require("plugins.configs.copilot"),
 })

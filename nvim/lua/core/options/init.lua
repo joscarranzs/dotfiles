@@ -56,3 +56,6 @@ vim.opt.smartcase = true   -- Respeta mayúsculas si las usas en la búsqueda
 
 -- Habilitar registro de LSP
 vim.lsp.set_log_level("debug")
+
+-- Habilitar autocompletado
+vim.g.copilot_enabled = true
