@@ -76,14 +76,6 @@ local function push_changes()
     end
 end
 
--- Verificar configuración remota
-print("Configuración remota:")
-print(exec("git remote -v"))
-
--- Probar conexión SSH
-print("Probando conexión SSH:")
-print(exec("ssh -T git@github.com"))
-
 -- Ejecución del script
 if validate_remote_access() and validate_remote_updates() and add_files() and make_commit() then
     push_changes()
