@@ -28,3 +28,6 @@ end
 
 set -x JAVA_HOME /home/linuxbrew/.linuxbrew/Cellar/openjdk/23.0.1
 set -x PATH $JAVA_HOME/bin $PATH
+
+# Created by `pipx` on 2024-12-24 20:55:29
+set PATH $PATH /home/jcarranzs/.local/bin
