@@ -1,3 +1,4 @@
 github-copilot/apps.json
 github-copilot/apps.json
-.config/update.lua
+update.lua
+gh/hosts.yml
