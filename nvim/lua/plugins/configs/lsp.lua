@@ -23,6 +23,7 @@ return {
                     "jdtls",     -- Java
                     "astro",     -- Astro
                     "pyright",   -- Python
+                    "marksman",  -- Markdown
                 },
                 automatic_installation = true,
             })
@@ -89,6 +90,12 @@ return {
                         },
                     },
                 },
+            })
+
+            -- Markdown
+            lspconfig.marksman.setup({
+                capabilities = capabilities,
+                root_dir = lspconfig.util.root_pattern(".git"),
             })
         end,
     },

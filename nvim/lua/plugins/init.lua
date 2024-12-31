@@ -38,4 +38,6 @@ require("lazy").setup({
     require("plugins.configs.which-key"),
     -- Plugin para el copilot
     require("plugins.configs.copilot"),
+    -- Plugin para el translator
+    require("plugins.configs.translator"),
 })
