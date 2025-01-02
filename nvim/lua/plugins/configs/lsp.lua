@@ -54,6 +54,14 @@ return {
             lspconfig.ts_ls.setup({
                 capabilities = capabilities,
                 root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
+                settings = {
+                    TypeScript = {
+                        validate = true,
+                    },
+                    JavaScript = {
+                        validate = true,
+                    },
+                }
             })
 
             -- C/C++

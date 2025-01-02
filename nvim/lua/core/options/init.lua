@@ -59,3 +59,12 @@ vim.lsp.set_log_level("debug")
 
 -- Habilitar autocompletado
 vim.g.copilot_enabled = true
+
+-- Configuración de diagnósticos
+vim.diagnostic.config({
+    virtual_text = true, -- Muestra errores en el texto
+    signs = true,        -- Habilita íconos en la columna de signos
+    underline = true,    -- Subraya errores en el código
+    update_in_insert = false, -- Evita actualizaciones constantes al escribir
+    severity_sort = true, -- Ordena los diagnósticos por severidad
+})
